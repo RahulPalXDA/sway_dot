@@ -1,0 +1,12 @@
+# Custom keybindings
+
+bindsym F5 reload
+bindsym Mod1+F4 kill
+bindsym $mod+x exec swaylock -c 000000
+bindsym XF86AudioRaiseVolume exec amixer set Master 10%+
+bindsym XF86AudioLowerVolume exec amixer set Master 10%-
+bindsym XF86AudioMute exec amixer set Master toggle
+bindsym XF86MonBrightnessUp exec brightnessctl s +10%
+bindsym XF86MonBrightnessDown exec brightnessctl s 10%-
+bindsym F12 exec /home/rahul/.config/scripts/powermenu_wofi.sh
+bindsym Print exec grim
