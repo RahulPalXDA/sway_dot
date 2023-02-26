@@ -1,5 +1,5 @@
-gaps inner 10
-gaps outer 10
+gaps inner 05
+gaps outer 00
 
 for_window [app_id="mpv"] floating enable
 for_window [app_id="mpv"] resize set 1280 720
