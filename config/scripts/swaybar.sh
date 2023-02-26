@@ -1,13 +1,36 @@
-Connection=$(nmcli | grep wlo1:\ connected\ | sed 's/wlo1:/Wifi/g')
-Volume=$(pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,')
-Mute=$(pactl list sinks | grep '^[[:space:]]Mute:' | head -n $(( $SINK + 1 )) | tail -n 1 | cut -d ":" -f2 | sed -e 's/^[ \t]*//')
-if [ $Mute = "yes" ]; then
-	Vol="Muted"
+# Network Connection
+connection=$(nmcli | grep connected\ to | cut -d ' ' -f2-4 | sed 's/connected/Connected/g')
+
+# Speaker volume Section
+left_speaker=$(amixer | grep Left:\ Playback | cut -d " " -f7 | grep -o '[[:digit:]]*')
+right_speaker=$(amixer | grep Right:\ Playback | cut -d " " -f7 | grep -o '[[:digit:]]*')
+left_speaker_status=$(amixer | grep Left:\ Playback | cut -d " " -f8 | grep -o '[[:alpha:]]*')
+right_speaker_status=$(amixer | grep Right:\ Playback | cut -d " " -f8 | grep -o '[[:alpha:]]*')
+
+if [[ $left_speaker_status -eq $right_speaker_status ]]; then
+        speaker_status=$right_speaker_status
 else
-	Vol="$Volume%"
+        volume="ONE SPEAKER OFF!!!"
 fi
-Brightness=$(brightnessctl | grep Current | cut -d '(' -f2 | cut -d '%' -f1)
-Battery=$(cat /sys/class/power_supply/BAT1/capacity)
-Battery_Status=$(cat /sys/class/power_supply/BAT1/status)
-Date=$(date +'%Y-%m-%d %I:%M %p')
-echo "$Connection | Volume $Vol | Brightness $Brightness% | $Battery_Status $Battery% | $Date"
+if [[ $speaker_status == 'on' ]]; then
+        if [[ $left_speaker -eq $right_speaker ]]; then
+                volume=$right_speaker%
+        else
+                volume="Left: $left_speaker%, Right: $right_speaker%"
+        fi
+else
+        volume="Muted"
+fi
+
+# Brightness Section
+brightness=$(brightnessctl | grep Current | cut -d ' ' -f4 | grep -o '[[:digit:]]*')
+
+# Battery Section
+battery_status=$(cat /sys/class/power_supply/BAT1/status)
+battery_percent=$(cat /sys/class/power_supply/BAT1/capacity)
+
+# Date Time
+date_time=$(date +'%Y-%m-%d %I:%M %p')
+
+# echo output
+echo "$connection | Volume $volume | Brightness $brightness% | $battery_status $battery_percent% | $date_time"
