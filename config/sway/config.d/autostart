@@ -1,1 +1,2 @@
-exec dunst
+exec dunst &
+sh ~/.config/scripts/batterywarning.sh
