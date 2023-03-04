@@ -11,7 +11,7 @@
        else
            if [ $battery_level -le 20 ]; then
               paplay ~/.local/share/sounds/Bixby.ogg
-              dunstify --urgency=normal "Battery Critically Low: ${battery_level}%"
+              dunstify --urgency=critical "Battery Critically Low: ${battery_level}%"
            fi
        fi
      sleep 10
